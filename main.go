@@ -7,22 +7,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func handlerFunc(w http.ResponseWriter, r *http.Request) {
+func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "text/html")
-	fmt.Println(r.URL.Path)
-	if r.URL.Path == "/" {
-		fmt.Fprintf(w, "<h1>Welcome</h1>")
-	} else if r.URL.Path == "/contact" {
-		fmt.Fprintf(w, "Email me at hello@mail.com")
-	} else {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "Not Found")
-	}
+	fmt.Fprintf(w, "<h1>Welcome</h1>")
+}
+
+func contact(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "text/html")
+	fmt.Fprintf(w, "Email me at hello@mail.com")
 }
 
 func main() {
 	mux := mux.NewRouter()
-	mux.HandleFunc("/", handlerFunc)
-	mux.HandleFunc("/contact", handlerFunc)
+	mux.HandleFunc("/", home)
+	mux.HandleFunc("/contact", contact)
 	http.ListenAndServe(":8080", mux)
 }
