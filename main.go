@@ -3,22 +3,26 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-func handlerFunc(rw http.ResponseWriter, r *http.Request) {
-	rw.Header().Set("content-type", "text/html")
+func handlerFunc(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "text/html")
 	fmt.Println(r.URL.Path)
 	if r.URL.Path == "/" {
-		fmt.Fprintf(rw, "<h1>Welcome</h1>")
+		fmt.Fprintf(w, "<h1>Welcome</h1>")
 	} else if r.URL.Path == "/contact" {
-		fmt.Fprintf(rw, "Email me at hello@mail.com")
+		fmt.Fprintf(w, "Email me at hello@mail.com")
 	} else {
-		rw.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(rw, "Not Found")
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "Not Found")
 	}
 }
 
 func main() {
-	http.HandleFunc("/", handlerFunc)
-	http.ListenAndServe(":8080", nil)
+	mux := mux.NewRouter()
+	mux.HandleFunc("/", handlerFunc)
+	mux.HandleFunc("/contact", handlerFunc)
+	http.ListenAndServe(":8080", mux)
 }
